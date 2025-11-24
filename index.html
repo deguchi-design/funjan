@@ -1,9 +1,63 @@
 <!DOCTYPE html>
 <html lang="ja">
   <head>
+    <!-- 基本設定 -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ふんじゃんのＢ級でいこうぜ！</title>
+
+    <!-- 【重要】SEO対策：検索結果に表示されるタイトル -->
+    <title>ふんじゃんのＢ級でいこうぜ！ | 全国の激アツ道の駅を動画で紹介</title>
+
+    <!-- 【重要】SEO対策：検索結果の説明文（ディスクリプション） -->
+    <meta
+      name="description"
+      content="全国の面白い道の駅、激アツな道の駅をYouTube動画で紹介！「ふんじゃんのＢ級でいこうぜ！」では、日本地図やランク別リストから気になる道の駅を簡単に探せます。ドライブや旅行の参考に。"
+    />
+
+    <!-- キーワード（参考程度） -->
+    <meta
+      name="keywords"
+      content="道の駅, 動画, YouTube, ドライブ, 旅行, B級スポット, 車中泊, グルメ"
+    />
+
+    <!-- 【重要】正規URLの設定（重複コンテンツ防止） -->
+    <link rel="canonical" href="https://deguchi-design.github.io/funjan/" />
+
+    <!-- SNSシェア用設定 (OGP) -->
+    <meta
+      property="og:title"
+      content="ふんじゃんのＢ級でいこうぜ！ | 全国の激アツ道の駅を動画で紹介"
+    />
+    <meta
+      property="og:description"
+      content="全国の面白い道の駅を動画でチェック！マップやランクから探せる道の駅紹介サイト。"
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://deguchi-design.github.io/funjan/"
+    />
+    <!-- サイトのサムネイル画像があれば、以下のcontentに画像URLを設定してください（例: https://.../ogp.jpg） -->
+    <meta
+      property="og:image"
+      content="https://deguchi-design.github.io/funjan/assets/ogp-image.jpg"
+    />
+    <meta property="og:site_name" content="ふんじゃんのＢ級でいこうぜ！" />
+    <meta property="og:locale" content="ja_JP" />
+
+    <!-- Twitter用設定 -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ふんじゃんのＢ級でいこうぜ！" />
+    <meta
+      name="twitter:description"
+      content="全国の激アツ道の駅を動画で紹介！"
+    />
+
+    <!-- ファビコン（ブラウザのタブ用アイコン）設定 -->
+    <!-- お持ちのアイコン画像があれば設定してください -->
+    <!-- <link rel="icon" href="/favicon.ico" /> -->
+
+    <!-- デザイン・機能の読み込み -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Yusei+Magic&family=Zen+Maru+Gothic:wght@500;700&display=swap"
@@ -13,6 +67,23 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
+    <!-- 構造化データ（Googleにサイト情報を正しく伝えるためのJSON-LD） -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "ふんじゃんのＢ級でいこうぜ！",
+        "url": "https://deguchi-design.github.io/funjan/",
+        "description": "全国の激アツ道の駅を動画で紹介するサイト",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://deguchi-design.github.io/funjan/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
     <style>
       /* カスタムフォントと基本設定 */
       body {
@@ -303,16 +374,27 @@
           <!-- ズームコントロール -->
           <div class="zoom-controls">
             <div class="zoom-level" id="zoom-level-text">x1.00</div>
-            <button class="zoom-btn" onclick="zoomIn()" title="拡大">
+            <button
+              class="zoom-btn"
+              onclick="zoomIn()"
+              title="拡大"
+              aria-label="地図を拡大"
+            >
               <i class="fas fa-plus"></i>
             </button>
-            <button class="zoom-btn" onclick="zoomOut()" title="縮小">
+            <button
+              class="zoom-btn"
+              onclick="zoomOut()"
+              title="縮小"
+              aria-label="地図を縮小"
+            >
               <i class="fas fa-minus"></i>
             </button>
             <button
               class="zoom-btn"
               onclick="zoomReset()"
               title="リセット"
+              aria-label="地図のズームをリセット"
               style="font-size: 1rem; color: #666; border-color: #999"
             >
               <i class="fas fa-compress"></i>
@@ -328,35 +410,43 @@
                 class="japan-map"
                 viewBox="0 0 1000 800"
                 xmlns="http://www.w3.org/2000/svg"
+                aria-label="日本地図"
+                role="img"
               >
+                <title>日本地図クリッカブルマップ</title>
                 <!-- 北海道 -->
                 <path
                   class="island island-hokkaido"
                   d="M720,50 L820,40 L930,120 L880,220 L750,200 L700,120 Z"
+                  aria-label="北海道エリア"
                 />
 
                 <!-- 本州 -->
                 <path
                   class="island island-honshu"
                   d="M680,250 L820,250 L790,540 L640,690 L550,660 L530,620 L300,600 L280,520 L350,480 L450,450 L580,400 L650,280 Z"
+                  aria-label="本州エリア"
                 />
 
                 <!-- 四国 -->
                 <path
                   class="island island-shikoku"
                   d="M300,650 L460,650 L450,750 L290,750 Z"
+                  aria-label="四国エリア"
                 />
 
                 <!-- 九州 -->
                 <path
                   class="island island-kyushu"
                   d="M100,550 L250,550 L240,750 L80,720 Z"
+                  aria-label="九州エリア"
                 />
 
                 <!-- 沖縄 -->
                 <path
                   class="island island-okinawa"
                   d="M40,760 L80,760 L80,800 L40,800 Z"
+                  aria-label="沖縄エリア"
                 />
               </svg>
 
@@ -384,7 +474,9 @@
           >
             <!-- ランク絞り込み -->
             <div class="w-full md:w-auto">
-              <label class="block text-xs font-bold text-gray-500 mb-1 ml-2"
+              <label
+                for="rank-filter"
+                class="block text-xs font-bold text-gray-500 mb-1 ml-2"
                 >ランクで絞り込み</label
               >
               <div class="relative">
@@ -404,7 +496,9 @@
 
             <!-- 県名絞り込み -->
             <div class="w-full md:w-auto">
-              <label class="block text-xs font-bold text-gray-500 mb-1 ml-2"
+              <label
+                for="pref-filter"
+                class="block text-xs font-bold text-gray-500 mb-1 ml-2"
                 >県名で絞り込み</label
               >
               <div class="relative">
@@ -585,8 +679,6 @@
 
         // ズーム表示の更新
         zoomLevelText.textContent = `x${currentZoom.toFixed(2)}`;
-
-        // ピンの逆スケール処理は削除済み（CSSサイズ固定のため）
       }
 
       function zoomIn() {
