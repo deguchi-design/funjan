@@ -38,18 +38,15 @@
         position: relative;
         width: 100%;
         max-width: 800px;
-        /* 高さをautoにし、アスペクト比で管理することでスマホでもPCでも余白が出ないようにする */
+        /* 高さをautoにし、アスペクト比で管理 */
         height: auto;
-        aspect-ratio: 1000 / 1000; /* 地図のSVG比率に合わせる */
+        aspect-ratio: 1000 / 800;
         margin: 0 auto;
         background-color: rgba(255, 255, 255, 0.6);
         border: 4px dashed #fcd34d;
         border-radius: 20px;
-        overflow: hidden; /* はみ出し防止（スクロールは内部で行う） */
+        overflow: hidden; /* 枠外は隠す */
         box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
-        display: flex;
-        align-items: center;
-        justify-content: center;
       }
 
       /* スクロール可能な領域 */
@@ -57,21 +54,32 @@
         width: 100%;
         height: 100%;
         overflow: auto; /* コンテンツが大きい場合スクロール */
-        /* iOS慣性スクロール */
         -webkit-overflow-scrolling: touch;
-        display: grid;
-        place-items: center;
+
+        /* 修正: 強制的な中央寄せ(justify-content/align-items)を削除 */
+        /* これにより、拡大してコンテンツが親を超えた場合に、左上端が見切れる問題を解消 */
+        display: flex;
+      }
+
+      /* コンテンツが親より大きくなった場合のスクロール余白挙動補正 */
+      .map-scroll-area::after {
+        content: "";
+        display: block;
+        flex: 0 0 auto;
       }
 
       /* 実際に拡大縮小されるコンテンツ */
       .map-content {
         position: relative;
-        /* 初期サイズは親に合わせて100%にする（レスポンシブ） */
         width: 100%;
         height: auto;
         aspect-ratio: 1000 / 800;
-        transition: width 0.3s ease; /* アニメーション */
+        transition: width 0.3s ease;
         transform-origin: center center;
+
+        /* margin: auto により、親より小さい時は中央配置、大きい時は通常配置（スクロール可）になる */
+        margin: auto;
+        flex-shrink: 0; /* 親が小さくても縮まないようにする */
       }
 
       /* 日本地図のSVGスタイリング */
@@ -85,7 +93,7 @@
       /* 共通のパススタイル */
       .island {
         fill: #ffffff;
-        stroke-width: 10; /* 線を太くポップに */
+        stroke-width: 10;
         stroke-linecap: round;
         stroke-linejoin: round;
         transition: all 0.3s ease;
@@ -95,27 +103,27 @@
         fill: #fffaea;
       }
 
-      /* 各エリアの色分け（ポップな色枠） */
+      /* 各エリアの色分け */
       .island-hokkaido {
         stroke: #f97316;
-      } /* オレンジ */
+      }
       .island-honshu {
         stroke: #2dd4bf;
-      } /* エメラルド */
+      }
       .island-shikoku {
         stroke: #3b82f6;
-      } /* 青 */
+      }
       .island-kyushu {
         stroke: #d946ef;
-      } /* ピンク */
+      }
       .island-okinawa {
         stroke: #facc15;
-      } /* 黄色 */
+      }
 
       /* ピンのラッパー */
       .pin-wrapper {
         position: absolute;
-        transform: translate(-50%, -100%); /* ピンの先端を座標に合わせる */
+        transform: translate(-50%, -100%);
         cursor: pointer;
         z-index: 10;
         width: 0;
@@ -131,7 +139,7 @@
         color: #ef4444;
         filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.2));
         position: absolute;
-        left: -12px; /* 中心補正 */
+        left: -12px;
         bottom: 0;
         transition: color 0.2s;
       }
@@ -149,7 +157,7 @@
         border: 3px solid #ef4444;
         box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
         position: absolute;
-        bottom: 40px; /* ピンの上に表示 */
+        bottom: 40px;
         left: 50%;
         transform: translateX(-50%);
         opacity: 0;
@@ -265,18 +273,15 @@
   </head>
   <body class="min-h-screen pb-10">
     <!-- ヘッダーエリア -->
-    <!-- py-6 から py-3 に変更して縦幅を削減 -->
     <header
       class="bg-yellow-400 border-b-4 border-yellow-600 py-3 md:py-6 text-center sticky top-0 z-50 shadow-lg"
     >
       <div class="container mx-auto px-4">
-        <!-- text-3xl -> text-lg に変更して1行に収める、whitespace-nowrapで折り返し禁止 -->
         <h1
           class="text-lg md:text-5xl text-white tracking-wider transform -rotate-1 inline-block whitespace-nowrap"
         >
           <i class="fas fa-car-side mr-2"></i>ふんじゃんのＢ級でいこうぜ！
         </h1>
-        <!-- mt-2 -> mt-1, text-sm -> text-[10px] に変更してコンパクト化 -->
         <p
           class="text-yellow-800 mt-1 md:mt-2 font-bold text-[10px] md:text-base bg-yellow-200 inline-block px-4 py-1 rounded-full whitespace-nowrap"
         >
@@ -293,7 +298,6 @@
         >
           <i class="fas fa-map-marked-alt mr-2"></i>日本地図から探す
         </h2>
-        <!-- 説明文削除 -->
 
         <div class="map-wrapper">
           <!-- ズームコントロール -->
@@ -368,7 +372,7 @@
         <h2
           class="text-2xl font-bold text-center mb-6 text-orange-600 bg-white inline-block px-6 py-2 rounded-full border-2 border-orange-500 mx-auto block shadow-md"
         >
-          <i class="fas fa-list-ul mr-2"></i>道の駅リストから探す
+          <i class="fas fa-list-ul mr-2"></i>ピックアップ道の駅リスト
         </h2>
 
         <!-- 絞り込み機能 -->
@@ -459,8 +463,8 @@
           prefecture: "和歌山県",
           address: "和歌山県西牟婁郡すさみ町江住８０８−１",
           url: "https://www.youtube.com/watch?v=nhKyinmYK6k",
-          mapTop: "73%",
-          mapLeft: "45%",
+          mapTop: "78%", // 紀伊半島先端付近
+          mapLeft: "55%",
           color: "bg-orange-100 border-orange-300",
         },
         {
@@ -470,8 +474,8 @@
           prefecture: "福井県",
           address: "福井県丹生郡越前町厨７１−３３５−１",
           url: "https://www.youtube.com/watch?v=WMajkGinSXg",
-          mapTop: "55%",
-          mapLeft: "52%",
+          mapTop: "55%", // 北陸
+          mapLeft: "55%",
           color: "bg-blue-100 border-blue-300",
         },
         {
@@ -481,8 +485,8 @@
           prefecture: "三重県",
           address: "三重県松阪市飯高町宮前１７７",
           url: "https://www.youtube.com/watch?v=CmH0R1-PIjw",
-          mapTop: "68%",
-          mapLeft: "48%",
+          mapTop: "75%", // 紀伊半島東部
+          mapLeft: "58%",
           color: "bg-green-100 border-green-300",
         },
         {
@@ -492,8 +496,8 @@
           prefecture: "長野県",
           address: "長野県小県郡長和町古町２６４３−３",
           url: "https://www.youtube.com/watch?v=LrD97sLTDe4",
-          mapTop: "50%",
-          mapLeft: "62%",
+          mapTop: "48%", // 中部内陸
+          mapLeft: "65%",
           color: "bg-purple-100 border-purple-300",
         },
         {
@@ -503,8 +507,8 @@
           prefecture: "広島県",
           address: "広島県世羅郡世羅町川尻2402-1",
           url: "https://www.youtube.com/watch?v=QPMJFcp5f9I",
-          mapTop: "65%",
-          mapLeft: "32%",
+          mapTop: "60%", // 中国地方
+          mapLeft: "35%",
           color: "bg-red-100 border-red-300",
         },
         {
@@ -514,8 +518,8 @@
           prefecture: "長野県",
           address: "長野県上高井郡小布施町大島601",
           url: "https://www.youtube.com/watch?v=FHDszx1XFWg",
-          mapTop: "45%",
-          mapLeft: "63%",
+          mapTop: "42%", // 長野北部
+          mapLeft: "65%",
           color: "bg-indigo-100 border-indigo-300",
         },
         {
@@ -525,8 +529,8 @@
           prefecture: "兵庫県",
           address: "兵庫県神戸市北区大沢町上大沢2150",
           url: "https://www.youtube.com/watch?v=abWYDoZnNLQ",
-          mapTop: "64%",
-          mapLeft: "40%",
+          mapTop: "70%", // 兵庫南部
+          mapLeft: "48%",
           color: "bg-pink-100 border-pink-300",
         },
         {
@@ -536,7 +540,7 @@
           prefecture: "香川県",
           address: "香川県三豊市財田町財田上180-6",
           url: "https://www.youtube.com/watch?v=vKnb0xCaC0Y",
-          mapTop: "80%",
+          mapTop: "82%", // 四国
           mapLeft: "35%",
           color: "bg-yellow-100 border-yellow-300",
         },
@@ -547,8 +551,8 @@
           prefecture: "福井県",
           address: "福井県三方上中郡若狭町鳥浜122-31-1",
           url: "https://www.youtube.com/watch?v=FNvIOAGG0ug",
-          mapTop: "55%",
-          mapLeft: "50%",
+          mapTop: "53%", // 福井西部
+          mapLeft: "53%",
           color: "bg-cyan-100 border-cyan-300",
         },
         {
@@ -558,8 +562,8 @@
           prefecture: "香川県",
           address: "香川県三豊市三野町大見乙74",
           url: "https://www.youtube.com/watch?v=kCo0b7O9XQc",
-          mapTop: "78%",
-          mapLeft: "38%",
+          mapTop: "82%", // 四国
+          mapLeft: "40%",
           color: "bg-teal-100 border-teal-300",
         },
       ];
@@ -573,34 +577,16 @@
       const zoomLevelText = document.getElementById("zoom-level-text");
       const scrollArea = document.getElementById("scroll-area");
 
-      // 変更点: ピクセル単位での固定サイズ計算を廃止し、パーセントベースで管理
-      // これにより、スマホでもPCでも初期状態(1.0倍)は「コンテナ幅の100%」となり全域が表示される
-
       function updateZoom() {
-        // 幅をパーセントで設定。1.0倍なら100%（コンテナにフィット）、2.0倍なら200%（はみ出してスクロール）
+        // 幅をパーセントで設定
         const newWidthPercent = currentZoom * 100;
 
         mapContent.style.width = `${newWidthPercent}%`;
-        // 高さはaspect-ratioにより自動調整されるため auto でOK
-        // mapContent.style.height = 'auto'; // CSSで指定済みだが念のため
 
         // ズーム表示の更新
         zoomLevelText.textContent = `x${currentZoom.toFixed(2)}`;
 
-        // ピンのサイズ調整：地図が拡大されてもピンは元の大きさを維持するように逆スケールをかける
-        updatePinScale();
-      }
-
-      // ピンの大きさを維持するための関数
-      function updatePinScale() {
-        const pins = document.querySelectorAll(".pin-wrapper");
-        pins.forEach((pin) => {
-          // scale(1 / currentZoom) で地図の拡大率を打ち消す
-          // これにより、地図が2倍になってもピンは1/2倍され、見た目のサイズは維持される
-          pin.style.transform = `translate(-50%, -100%) scale(${
-            1 / currentZoom
-          })`;
-        });
+        // ピンの逆スケール処理は削除済み（CSSサイズ固定のため）
       }
 
       function zoomIn() {
@@ -679,10 +665,8 @@
             pinLink.style.top = station.mapTop;
             pinLink.style.left = station.mapLeft;
 
-            // 初期レンダリング時にスケール補正を適用
-            pinLink.style.transform = `translate(-50%, -100%) scale(${
-              1 / currentZoom
-            })`;
+            // 位置合わせのみ行う
+            pinLink.style.transform = `translate(-50%, -100%)`;
 
             pinLink.innerHTML = `
                         <div class="pin-label text-xs">No.${station.id} ${station.name}</div>
